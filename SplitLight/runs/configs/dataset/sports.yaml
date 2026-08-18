@@ -1,0 +1,7 @@
+name: Sports
+filter_seen: True
+column_name:
+  user_id: user_id
+  item_id: item_id
+  timestamp: timestamp
+  relevance:

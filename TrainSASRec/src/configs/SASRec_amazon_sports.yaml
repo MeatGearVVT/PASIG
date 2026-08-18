@@ -1,0 +1,36 @@
+seed: 42
+data_path: ../../data/Sports/sasrec/sasrec_inter.txt
+item_num: 18357
+
+
+dataset:
+  max_length: 128
+  # num_negatives:
+  full_negative_sampling: False
+
+dataloader:
+  batch_size: 128
+  test_batch_size: 256
+  num_workers: 8
+  validation_size: 10000
+
+model: SASRec
+model_params:
+  maxlen: 128
+  hidden_units: 128
+  num_blocks: 2
+  num_heads: 1
+  dropout_rate: 0.1
+  item_num: ${item_num}
+seqrec_module:
+  lr: 0.001
+  predict_top_k: 10  # this value is used for validation
+  filter_seen: True
+  # loss: bce
+
+trainer_params:
+  max_epochs: 100
+
+patience: 10
+sampled_metrics: False
+top_k_metrics: [10, 100]

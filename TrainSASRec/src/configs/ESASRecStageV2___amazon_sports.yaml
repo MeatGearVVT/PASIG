@@ -1,0 +1,47 @@
+seed: 42 
+data_path: ../../data/Sports/sasrec/sasrec_inter.txt
+path_to_cont_embeddings: ../../data/Sports/sasrec/embeddings_dict.pkl
+tags:
+  - amazon sports
+  - only stage2
+
+dataset:
+  max_length: 128
+  # num_negatives:
+  full_negative_sampling: False
+
+dataloader:
+  batch_size: 128
+  test_batch_size: 256
+  num_workers: 8
+  validation_size: 10000
+
+model: ESASRecV2
+model_params:
+  maxlen: 128
+  hidden_units: 128
+  num_blocks: 2
+  num_heads: 1
+  dropout_rate: 0.1
+  path_to_cont_embeddings: ${path_to_cont_embeddings}
+  content_embeddings_dim: 2048
+  mode_1: only_adapter
+  mode_2: only_adapter
+  scale: False
+  after_sum_norm: null
+
+ESASRecStage:
+  stage: 2
+  start_ckpt_path: null
+
+seqrec_module:
+  lr: 0.001
+  predict_top_k: 10
+  filter_seen: True
+
+trainer_params:
+  max_epochs: 100
+
+patience: 10
+sampled_metrics: False
+top_k_metrics: [10, 100]

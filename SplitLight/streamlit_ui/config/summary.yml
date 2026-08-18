@@ -1,0 +1,268 @@
+sections:
+  reference:
+    groups:
+      core:
+        metrics:
+          n_interactions:
+            label: "#Interactions"
+            info: false
+            type: val
+            direction: high
+            thresholds: { ok: 300000, caution: 10000 }
+            messages:
+              ok: "<b>{label}</b> is adequate."
+              need attention: "Relatively low <b>{label}</b> ({value_fmt})."
+              warning: "<b>{label}</b> — critically low ({value_fmt}). Revisit data ingestion."
+          n_users:
+            label: "#Users"
+            info: false
+            type: val
+            direction: high
+            thresholds: { ok: 10, caution: 0 }
+            messages:
+              ok: "<b>{label}</b> is adequate."
+              need attention: "Review <b>{label}</b> — few users in the data."
+              warning: "Too few <b>{label}</b>; sampling/splitting likely flawed."
+          n_items:
+            label: "#Items"
+            info: false
+            type: val
+            direction: high
+            thresholds: { ok: 10, caution: 0 }
+            messages:
+              ok: "<b>{label}</b> is adequate."
+              need attention: "Review <b>{label}</b> — limited catalog."
+              warning: "<b>{label}</b> — catalog is very small; recommendations may be unstable."
+          avg_seq_length:
+            label: "Avg. Seq. Length"
+            info: false
+            type: val
+            direction: high
+            thresholds: { ok: 10, caution: 4 }
+            messages:
+              ok: "<b>{label}</b> is OK for sequence modeling"
+              need attention: "Review <b>{label}</b> — sequences are short."
+              warning: "<b>{label}</b> — sequences are very short; sequence models may underperform."
+          density:
+            label: "Density"
+            info: false
+            type: val
+            direction: high
+            thresholds: { ok: 0.0001, caution: 0.000001 }
+            messages:
+              ok: "<b>{label}</b> looks healthy."
+              need attention: "Review <b>{label}</b> — dataset looks sparse ({value_fmt})."
+              warning: "<b>{label}</b> — data is extremely sparse ({value_fmt})."
+          "timestamp_collisions, %":
+            label: "Timestamp Collisions"
+            info: false
+            type: val
+            direction: low
+            thresholds: { ok: 0, caution: 0.01}
+            messages:
+              ok: "No <b>{label}</b>."
+              need attention: "Elevated <b>{label}</b> rate (>{value_fmt}). Check clock/timezone handling."
+              warning: "Severe <b>{label}</b> rate (>{value_fmt}). De-duplicate or fix timestamps."
+
+      duplicates:
+        metrics:
+          consec_duplicate:
+            label: "Consec. Duplicates"
+            info: false
+            type: pct
+            direction: low
+            thresholds: { ok: 0, caution: 30 }
+            messages:
+              ok: "No/few <b>{label}</b>."
+              need attention: "<b>{label}</b> are present; consider collapsing duplicates."
+              warning: "Many <b>{label}</b>; consider collapsing duplicates."
+          item_duplicate:
+            label: "Repetitive Interact."
+            info: false
+            type: pct
+            direction: low
+            thresholds: { ok: 0, caution: 30 }
+            messages:
+              ok: "Low <b>Repetitive</b> consumption."
+              need attention: "<b>{label}</b> — notable repetitive consumption."
+              warning: "b>{label}</b> — severe repetitive consumption."
+
+      temporal:
+        metrics:
+          timeframe:
+            label: "Data Timeframe"
+            info: true
+            type: val
+            direction: high
+            thresholds: { ok: 0, caution: 0 }
+          mean_time_between_interactions:
+            label: "Avg. Δt between Interact."
+            info: true
+            type: val
+            direction: low
+            thresholds: { ok: 0, caution: 0 }
+          mean_user_lifetime:
+            label: "Avg. User Lifetime"
+            info: true
+            type: val
+            direction: high
+            thresholds: { ok: 0, caution: 0 }
+          mean_item_lifetime:
+            label: "Avg. Item Lifetime"
+            info: true
+            type: val
+            direction: high
+            thresholds: { ok: 0, caution: 0 }
+
+  main_split:
+    groups:
+      core:
+        metrics:
+          n_interactions:
+            info: false
+            info_per_subset:
+              train:       false
+              test_target:  true
+              test_input:   false
+            type: val
+            direction: high
+            thresholds: { ok: 10, caution: 0 } 
+            per_subset:
+              train:       { ok: 300000, caution: 20000 }
+              test_target: { ok: 20000,  caution: 10000  }
+              test_input:  { ok: 20000,  caution: 10000  }
+            messages:
+              ok: "<b>{label}</b> is adequate."
+              need attention: "Relatively low <b>{label}</b> ({value_fmt})."
+              warning: "<b>{label}</b> — critically low ({value_fmt}). Revisit data ingestion."
+          n_users:
+            info: false
+            info_per_subset:
+              train:       false
+              test_target:  false
+              test_input:   false
+            type: val
+            direction: high
+            thresholds: { ok: 10, caution: 0 }
+            per_subset:
+              train:       { ok: 5000, caution: 500 }
+              test_target: { ok: 3000,  caution: 1500  }
+              test_input:  { ok: 3000,  caution: 1500  }
+            messages:
+              ok: "<b>{combined_label}</b> is adequate."
+              need attention: "Review <b>{combined_label}</b> — few active users."
+              warning: "Very few <b>{combined_label}</b>."
+          n_items:
+            info: false
+            info_per_subset:
+              train:       false
+              test_target:  false
+              test_input:   false
+            type: val
+            direction: high
+            thresholds: { ok: 10, caution: 0 }
+            per_subset:
+              train:       { ok: 1000, caution: 100 }
+              test_target: { ok: 1000,  caution: 100 }
+              test_input:  { ok: 1000,  caution: 100 }
+            messages:
+              ok: "<b>{combined_label}</b> looks good."
+              need attention: "<b>{combined_label}</b> is limited."
+              warning: "<b>{combined_label}</b> is very small."
+          avg_seq_length:
+            info: false
+            info_per_subset:
+              train:       false
+              test_target:  true
+              test_input:   false
+            type: val
+            direction: high
+            thresholds: { ok: 1, caution: 0 }
+            per_subset:
+              train:       { ok: 10, caution: 4 }
+              test_target: { ok: 3.0, caution: 2.2 }
+              test_input:  { ok: 4, caution: 2 }
+            messages:
+              ok: "<b>{combined_label}</b> is OK for sequence modeling."
+              need attention: "Review <b>{combined_label}</b> — sequences are short."
+              warning: "<b>{combined_label}</b> — sequences are very short."
+          timeframe:
+            label: "Data Timeframe"
+            info: true
+            info_per_subset:
+              train:       true
+              test_target:  true
+              test_input:   true
+            type: val
+            direction: high
+            thresholds: { ok: 0, caution: 0 }
+
+      data_leakage:
+        metrics:
+          has_overlapping_interactions:
+            label: "Shared Interactions"
+            info: false
+            type: val
+            direction: low
+            thresholds: { ok: 0, caution: 0 } 
+            messages:
+              ok: "No <b>{label}</b> between targets and training data."
+              warning: "<b>{label}</b> between targets and training data detected."
+          temporal_overlap:
+            label: "Temporal Overlap"
+            info: false
+            type: val
+            direction: low
+            thresholds: { ok: 0, caution: 0 }   # 0 = No (green), >0 = Warning
+            messages:
+              ok: "No <b>{label}</b>."
+              warning: "<b>{label}</b> with the training data detected."
+          leak_interactions_share:
+            label: "#Leaked Targets"
+            info: false
+            type: pct
+            direction: low
+            thresholds: { ok: 0, caution: 0 } 
+            messages:
+              ok: "No <b>{label}</b>."
+              need attention: "Review <b>{label}</b> ({value_fmt}). Rebuild with strict time cutoff."
+              warning: "A lot of <b>{label}</b> ({value_fmt}). Rebuild with strict time cutoff."
+
+
+      cold_start:
+        metrics:
+          cold_user_share:
+            label: "Cold Users"
+            info: false
+            type: pct
+            direction: low
+            thresholds: { ok: 3, caution: 15 }
+            messages:
+              ok: "<b>{label}</b> share is low."
+              need attention: "Elevated <b>{label}</b> rate ({value_fmt})."
+              warning: "Many <b>{label}</b> ({value_fmt}). Consider adding user-side features or warm-start heuristics."
+          cold_item_share:
+            label: "Cold Items"
+            info: false
+            type: pct
+            direction: low
+            thresholds: { ok: 3, caution: 15 }
+            messages:
+              ok: "<b>{label}</b> share is low."
+              need attention: "Review <b>{label}</b> — elevated ({value_fmt}). Add item metadata and embeddings."
+              warning: "<b>{label}</b> — high ({value_fmt}). Apply cold-start strategies (content/similarity)."
+
+      data_shift:
+        metrics:
+          temporal_shift:
+            label: "Temporal Shift"
+            info: true
+            type: val
+            direction: low
+            thresholds: { ok: 0, caution: 0 }
+          positional_shift:
+            label: "Positional Shift"
+            info: true
+            type: val
+            direction: low
+            thresholds: { ok: 0, caution: 0 }
